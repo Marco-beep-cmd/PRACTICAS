@@ -10,7 +10,7 @@ const questions = [
     },
     {
         question: "¿Qué ícono representa la opción Centrar?",
-        image: "images/2.PNG",
+        image: "images/2.png",
         options: [
             { text: "A", isCorrect: false },
             { text: "B", isCorrect: true },
