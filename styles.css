@@ -60,7 +60,7 @@ img {
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%, 90% {
         transform: scale(1);
     }
     50% {
