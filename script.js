@@ -166,7 +166,7 @@ function showQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
     quizContainer.innerHTML = `
         <h2>${currentQuestion.question}</h2>
-        <img src="${currentQuestion.image}" alt="Question Image" style="width: 915px; height: auto;">
+        <img src="${currentQuestion.image}" alt="Question Image">
         <div>
             ${currentQuestion.options.map((option, index) => `
                 <button class="option-btn" data-is-correct="${option.isCorrect}">${option.text}</button>
@@ -189,20 +189,63 @@ function showQuestion() {
                 if (currentQuestionIndex < questions.length) {
                     showQuestion();
                 } else {
-                    let finalScore = Math.round(score); // Redondear el puntaje al número entero más cercano
-                    let message = '';
-                    if (finalScore <= 10) {
-                        message = 'Hay que mejorar 😕. Repíte los ejercicios para que ganes tu caramelito 🍬';
-                    } else if (finalScore <= 17) {
-                        message = 'Poco a poco pero hay que seguir para adelante 💪🏻. Repíte los ejercicios para que ganes tu caramelito 🍬.';
-                    } else if (finalScore <= 20) {
-                        message = '¡FELICITACIONES, TÓMA TU CARAMELITO 🍬!';
-                    }
-                    quizContainer.innerHTML = `<h2>¡Has completado todas las preguntas!</h2><p>Tu puntaje es ${finalScore} de 20.</p><p>${message}</p>`;
+                    showResult();
                 }
-            }, 100); // Esperar 1 segundo antes de pasar a la siguiente pregunta
+            }, 100); // Esperar 0.1 segundos antes de pasar a la siguiente pregunta
         });
     });
+}
+
+function showResult() {
+    let finalScore = Math.round(score); // Redondear el puntaje al número entero más cercano
+    let message = '';
+    if (finalScore <= 10) {
+        message = 'Hay que mejorar 😕. Repíte los ejercicios para que ganes tu caramelito 🍬';
+    } else if (finalScore <= 17) {
+        message = 'Poco a poco pero hay que seguir para adelante 💪🏻. Repíte los ejercicios para que ganes tu caramelito 🍬.';
+    } else if (finalScore <= 20) {
+        message = '¡FELICITACIONES, TÓMA TU CARAMELITO 🍬!';
+    }
+    quizContainer.innerHTML = `
+        <h2>¡Has completado todas las preguntas!</h2>
+        <p>Tu puntaje es ${finalScore} de 20.</p>
+        <p>${message}</p>
+        ${finalScore >= 20 ? '<div id="caramelito">🍬</div>' : ''}
+    `;
+
+    if (finalScore >= 20) {
+        const caramelito = document.getElementById('caramelito');
+        caramelito.addEventListener('click', () => createExplosion(caramelito));
+    }
+}
+
+function createExplosion(element) {
+    const rect = element.getBoundingClientRect();
+    const parentX = rect.left + window.scrollX + rect.width / 2;
+    const parentY = rect.top + window.scrollY + rect.height / 2;
+
+    for (let i = 0; i < 10; i++) {
+        const newCaramelito = document.createElement('div');
+        newCaramelito.classList.add('additional-caramelito');
+        newCaramelito.textContent = '🍬';
+        document.body.appendChild(newCaramelito);
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 100 + 50; // Distancia aleatoria
+        const x = parentX + distance * Math.cos(angle);
+        const y = parentY + distance * Math.sin(angle);
+
+        newCaramelito.style.left = `${x}px`;
+        newCaramelito.style.top = `${y}px`;
+
+        // Eliminar el caramelito después de la animación
+        newCaramelito.addEventListener('animationend', () => {
+            newCaramelito.remove();
+        });
+    }
+}
+
+showQuestion();
 }
 
 showQuestion();
